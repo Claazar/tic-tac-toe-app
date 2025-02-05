@@ -8,6 +8,10 @@ const App: React.FC = () => {
     setGameMode(mode);
   };
 
+  const handleChangeGameMode = () => {
+    setGameMode(null); // Reset to null so the modal appears again
+  };
+
   return (
     <div className="h-screen flex items-center justify-center bg-gray-100 relative">
       {gameMode === null && (
@@ -18,20 +22,20 @@ const App: React.FC = () => {
               className="modal-button"
               onClick={() => handleGameModeSelect("human")}
             >
-              Play against another human
+              Play Local vs Human
             </button>
             <button
               className="modal-button"
               onClick={() => handleGameModeSelect("bot")}
             >
-              Play against the bot
+              Play Online vs Bot
             </button>
           </div>
         </div>
       )}
 
       {/* Game Board */}
-      {gameMode !== null && <Board gameMode={gameMode} />}
+      {gameMode !== null && <Board gameMode={gameMode} onChangeGameMode={handleChangeGameMode} />}
     </div>
   );
 };
