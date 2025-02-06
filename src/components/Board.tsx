@@ -4,7 +4,8 @@ import Square from './Square.tsx';
 interface BoardProps {
   gameMode: "human" | "bot";
   onChangeGameMode: () => void;
-  onWin: (winner: "X" | "O") => void; // Added this prop to notify App when there's a winner
+  onWin: (winner: "X" | "O") => void;
+  botDifficulty: "easy" | "medium" | "hard" | null;
 }
 
 const clickSound = new Audio("/noise/clickPop.mp3");
@@ -12,11 +13,12 @@ const victorySound = new Audio("/noise/victory.mp3");
 const defeatSound = new Audio("/noise/defeat.mp3");
 const drawSound = new Audio("/noise/draw.mp3");
 
-const Board: React.FC<BoardProps> = ({ gameMode, onChangeGameMode, onWin }) => {
+const Board: React.FC<BoardProps> = ({ gameMode, onChangeGameMode, onWin, botDifficulty }) => {
   const [squares, setSquares] = useState<(string | null)[]>(Array(9).fill(null));
   const [isXNext, setIsXNext] = useState(true);
   const [lastWinner, setLastWinner] = useState<string | null>(null);
 
+  // Handle the player's move
   const handleClick = (index: number) => {
     if (calculateWinner(squares) || squares[index] || (gameMode === "bot" && !isXNext)) {
       return;
@@ -26,60 +28,118 @@ const Board: React.FC<BoardProps> = ({ gameMode, onChangeGameMode, onWin }) => {
     setSquares(newSquares);
     setIsXNext(!isXNext);
 
-
     clickSound.play();
-
   };
 
+  // Handle the game restart
   const handleRestart = () => {
     setSquares(Array(9).fill(null));
     setIsXNext(true);
     setLastWinner(null); // Reset winner for the next round
   };
 
+  // Bot's move logic based on difficulty
+  useEffect(() => {
+    if (gameMode === "bot" && !isXNext && botDifficulty && !calculateWinner(squares) && squares.includes(null)) {
+      setTimeout(() => botMove(), 500);
+    }
+  }, [isXNext, squares, botDifficulty, gameMode]);
+
+  const botMove = () => {
+    const botSymbol = "O";
+    let move = botDifficulty === "easy" ? getRandomMove() : botDifficulty === "medium" ? getMediumMove(botSymbol) : getHardMove(botSymbol);
+
+    if (move !== null) {
+      const newSquares = [...squares];
+      newSquares[move] = botSymbol;
+      setSquares(newSquares);
+      setIsXNext(true);
+    }
+  };
+
+  // Get random move for bot
+  const getRandomMove = () => {
+    const availableMoves = squares.map((val, idx) => (val === null ? idx : null)).filter(val => val !== null) as number[];
+    return availableMoves.length > 0 ? availableMoves[Math.floor(Math.random() * availableMoves.length)] : null;
+  };
+
+  // Get medium move for bot (either random or winning move)
+  const getMediumMove = (botSymbol: "X" | "O") => {
+    return findWinningMove(botSymbol) ?? getRandomMove();
+  };
+
+  // Get hard move for bot using minimax algorithm
+  const getHardMove = (botSymbol: "X" | "O") => {
+    return minimax(squares, botSymbol).index;
+  };
+
+  // Check for a winning move for bot
+  const findWinningMove = (symbol: "X" | "O") => {
+    for (let i = 0; i < 9; i++) {
+      if (!squares[i]) {
+        const testBoard = [...squares];
+        testBoard[i] = symbol;
+        if (calculateWinner(testBoard) === symbol) {
+          return i;
+        }
+      }
+    }
+    return null;
+  };
+
+  // Minimax algorithm for hard difficulty bot
+  const minimax = (board: ("X" | "O" | null)[], currentPlayer: "X" | "O") => {
+    const availableMoves = board.map((val, idx) => (val === null ? idx : null)).filter(val => val !== null) as number[];
+    const winner = calculateWinner(board);
+    if (winner === "X") return { score: -10 };
+    if (winner === "O") return { score: 10 };
+    if (availableMoves.length === 0) return { score: 0 };
+
+    const moves = availableMoves.map(move => {
+      const newBoard = [...board];
+      newBoard[move] = currentPlayer;
+      const result = minimax(newBoard, currentPlayer === "X" ? "O" : "X");
+      return { index: move, score: result.score };
+    });
+
+    return currentPlayer === "O"
+      ? moves.reduce((best, move) => (move.score > best.score ? move : best))
+      : moves.reduce((best, move) => (move.score < best.score ? move : best));
+  };
+
+  // Calculate winner of the game
+  const calculateWinner = (squares: (string | null)[]) => {
+    const lines = [
+      [0, 1, 2], [3, 4, 5], [6, 7, 8],
+      [0, 3, 6], [1, 4, 7], [2, 5, 8],
+      [0, 4, 8], [2, 4, 6]
+    ];
+    for (const [a, b, c] of lines) {
+      if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+        return squares[a];
+      }
+    }
+    return null;
+  };
+
+  // Check for winner or draw
   const winner = calculateWinner(squares);
-
-  // Call onWin when there's a winner and update the lastWinner
-  useEffect(() => {
-    if (winner && winner !== lastWinner) {
-      onWin(winner); // Inform App that there is a winner
-      setLastWinner(winner);
-    }
-  }, [winner, lastWinner, onWin, gameMode, squares]);
-
-  // Bot's move logic
-  useEffect(() => {
-    if (gameMode === "bot" && !isXNext && !winner && squares.includes(null)) {
-      setTimeout(() => {
-        const emptyIndices = squares
-          .map((square, index) => (square === null ? index : -1))
-          .filter((index) => index !== -1);
-
-        const randomIndex = emptyIndices[Math.floor(Math.random() * emptyIndices.length)];
-        const newSquares = squares.slice();
-        newSquares[randomIndex] = 'O';
-        setSquares(newSquares);
-        setIsXNext(true);
-      }, 500);
-    }
-  }, [isXNext, squares, gameMode, winner]);
-
   const status = winner
     ? `Winner: ${winner}`
     : squares.includes(null)
     ? `Next player: ${isXNext ? 'X' : 'O'}`
     : "It's a draw!";
 
+  // Play sounds based on the game state
   useEffect(() => {
-    if (gameMode === "bot" && winner === "O") {
-      defeatSound.play();
-    }else if (status === "It's a draw!") {
+    if (winner && winner !== lastWinner) {
+      onWin(winner); // Inform App that there is a winner
+      setLastWinner(winner);
+      winner === "O" ? defeatSound.play() : victorySound.play();
+    } else if (status === "It's a draw!") {
       drawSound.play();
-    } else if (winner && winner !== lastWinner) {
-    victorySound.play();
     }
-  }, [gameMode, squares, winner, status, lastWinner])
-
+  }, [squares, winner, lastWinner, status, onWin]);
 
   return (
     <div className="flex flex-col items-center">
@@ -100,19 +160,5 @@ const Board: React.FC<BoardProps> = ({ gameMode, onChangeGameMode, onWin }) => {
     </div>
   );
 };
-
-function calculateWinner(squares: (string | null)[]) {
-  const lines = [
-    [0, 1, 2], [3, 4, 5], [6, 7, 8],
-    [0, 3, 6], [1, 4, 7], [2, 5, 8],
-    [0, 4, 8], [2, 4, 6]
-  ];
-  for (let [a, b, c] of lines) {
-    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
-    }
-  }
-  return null;
-}
 
 export default Board;
