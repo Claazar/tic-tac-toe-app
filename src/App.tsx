@@ -1,27 +1,43 @@
+/**
+ * @Author: Buntschu Leonard
+ * @Date:   04-02-2025 14:26:39
+ * @Last Modified by:   Buntschu Leonard
+ * @Last Modified time: 07-02-2025 09:19:07
+ * All rights reserved
+ */
+
 import React, { useState, useEffect } from "react";
 import Board from "./components/Board.tsx";
 
+// Main App component
 const App: React.FC = () => {
+  // State for game mode (vs human or vs bot)
   const [gameMode, setGameMode] = useState<"human" | "bot" | null>(null);
+  // State for bot difficulty (easy, medium, hard)
   const [botDifficulty, setBotDifficulty] = useState<"easy" | "medium" | "hard" | null>(null);
+  // State to keep track of the wins of both players
   const [wins, setWins] = useState({ X: 0, O: 0 });
 
+  // Function to handle game mode selection
   const handleGameModeSelect = (mode: "human" | "bot") => {
     if (mode === "bot") {
-      setBotDifficulty(null);
+      setBotDifficulty(null); // Reset bot difficulty when switching to bot mode
     }
-    setGameMode(mode);
+    setGameMode(mode); // Set selected gamemode
   };
 
+  // Function to handle bot difficulty selection
   const handleDifficultySelect = (difficulty: "easy" | "medium" | "hard") => {
-    setBotDifficulty(difficulty);
+    setBotDifficulty(difficulty); // Set the selected difficulty
   };
 
+  // Function to reset gamemode and bot difficulty
   const handleChangeGameMode = () => {
-    setGameMode(null);
-    setBotDifficulty(null);
+    setGameMode(null); // Reset game mode
+    setBotDifficulty(null); // Reset bot difficulty
   };
 
+  // Functuon to update the win count for a specific player
   const handleWin = (winner: "X" | "O") => {
     setWins((prevWins) => ({ ...prevWins, [winner]: prevWins[winner] + 1 }));
   };

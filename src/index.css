@@ -2,8 +2,11 @@
  * @Author: Buntschu Leonard
  * @Date:   04-02-2025 14:26:39
  * @Last Modified by:   Buntschu Leonard
- * @Last Modified time: 06-02-2025 14:40:49
+ * @Last Modified time: 07-02-2025 09:19:16
+ * All rights reserved
  */
+
+
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
