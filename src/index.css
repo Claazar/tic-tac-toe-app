@@ -2,12 +2,20 @@
  * @Author: Buntschu Leonard
  * @Date:   04-02-2025 14:26:39
  * @Last Modified by:   Buntschu Leonard
- * @Last Modified time: 04-02-2025 15:51:27
+ * @Last Modified time: 07-02-2025 11:20:28
+ * All rights reserved
  */
+
+ body {
+  background-color: white;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 5px;
+  justify-items: start;
+  max-width: 320px;
 }
 
 button {
@@ -30,15 +38,107 @@ button:hover {
   margin-bottom: 10px;
 }
 
-.restart-btn {
+.flex{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.restart-btn, .changeMode-btn {
   width: 200px;
-  margin-top: 10px;
   background-color: #4299e1;
   color: white;
   padding: 10px 20px;
   border-radius: 5px;
+  font-size: 1.5rem;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 5px;
+}
+.restart-btn{
+  font-size: 1.7rem;
 }
 
-.restart-btn:hover {
+.restart-btn:hover, .changeMode-btn:hover {
   background-color: #3182ce;
+}
+
+
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+
+.modal-content {
+  background-color: white;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  width: 300px;
+  height: 200px;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.modal-content-difficulty{
+  background-color: white;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  width: 300px;
+  height: 150px;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.modal-button {
+  width: 130px;
+  padding: 5px 5px;
+  background-color: #4299e1;
+  color: white;
+  border: 2px solid #4a5568;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin: 10px;
+  align-items: center;
+}
+
+.modal-button-difficulty {
+  width: 90px;
+  height: 75px;
+  background-color: #4299e1;
+  color: white;
+  border: 2px solid #4a5568;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin: 5px;
+  align-items: center;
+}
+
+.modal-button:hover {
+  background-color: #3182ce;
+}
+
+.modal-button:disabled {
+  background-color: #d2d2d2;
+  cursor: not-allowed;
 }
