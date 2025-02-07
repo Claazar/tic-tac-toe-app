@@ -2,7 +2,7 @@
  * @Author: Buntschu Leonard
  * @Date:   04-02-2025 14:26:39
  * @Last Modified by:   Buntschu Leonard
- * @Last Modified time: 07-02-2025 09:40:30
+ * @Last Modified time: 07-02-2025 10:41:48
  * All rights reserved
  */
 
@@ -18,10 +18,12 @@ interface BoardProps {
 }
 
 // Sound effects for different events in the game
+/*
 const clickSound = new Audio("/noise/clickPop.mp3");
 const victorySound = new Audio("/noise/victory.mp3");
 const defeatSound = new Audio("/noise/defeat.mp3");
 const drawSound = new Audio("/noise/draw.mp3");
+*/
 
 // Board component handles the game logic and rendering of the board
 const Board: React.FC<BoardProps> = ({ gameMode, onChangeGameMode, onWin, botDifficulty }) => {
@@ -45,7 +47,7 @@ const Board: React.FC<BoardProps> = ({ gameMode, onChangeGameMode, onWin, botDif
     setIsXNext(!isXNext); // Switch turns between X and O
 
     // Play click sound effect
-    clickSound.play();
+    // clickSound.play();
   };
 
   // Handle game restart
@@ -149,15 +151,17 @@ const Board: React.FC<BoardProps> = ({ gameMode, onChangeGameMode, onWin, botDif
     : "It's a draw!"; // If it is draw game
 
   // Play sounds based on the game state
+  
   useEffect(() => {
     if (winner && winner !== lastWinner) {
       onWin(winner); // Inform App that there is a winner
       setLastWinner(winner); // Update last winner to prevent replaying victory sound
-      winner === "O" ? defeatSound.play() : victorySound.play(); // Play apporpriate sound
+      // winner === "O" ? defeatSound.play() : victorySound.play(); // Play apporpriate sound
     } else if (status === "It's a draw!") {
-      drawSound.play(); // Play draw sound
+      // drawSound.play(); // Play draw sound
     }
   }, [squares, winner, lastWinner, status, onWin]);
+
 
   return (
     <div className="flex flex-col items-center">
