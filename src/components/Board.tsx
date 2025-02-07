@@ -2,7 +2,7 @@
  * @Author: Buntschu Leonard
  * @Date:   04-02-2025 14:26:39
  * @Last Modified by:   Buntschu Leonard
- * @Last Modified time: 07-02-2025 10:41:48
+ * @Last Modified time: 07-02-2025 11:48:02
  * All rights reserved
  */
 
@@ -57,12 +57,13 @@ const Board: React.FC<BoardProps> = ({ gameMode, onChangeGameMode, onWin, botDif
     setLastWinner(null); // Reset winner for the next round
   };
 
-  // Bot move logic based on difficulty
-  useEffect(() => {
-    if (gameMode === "bot" && !isXNext && botDifficulty && !calculateWinner(squares) && squares.includes(null)) {
-      setTimeout(() => botMove(), 500); // Added delay to simulate thinking
-    }
-  }, [isXNext, squares, botDifficulty, gameMode]);
+    // Bot move logic based on difficulty
+    useEffect(() => {
+      if (gameMode === "bot" && !isXNext && botDifficulty && !calculateWinner(squares) && squares.includes(null)) {
+        setTimeout(() => botMove(), 500); // Added delay to simulate thinking
+      }
+    }, [isXNext, squares, botDifficulty, gameMode]);
+
 
   // Bot makes a move based on difficulty
   const botMove = () => {
@@ -76,6 +77,7 @@ const Board: React.FC<BoardProps> = ({ gameMode, onChangeGameMode, onWin, botDif
       setIsXNext(true); // Switch turn to X after bot move
     }
   };
+
 
   // Get random move for bot (easy difficulty)
   const getRandomMove = () => {
