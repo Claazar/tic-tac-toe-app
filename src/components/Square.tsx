@@ -1,3 +1,11 @@
+/**
+ * @Author: Buntschu Leonard
+ * @Date:   04-02-2025 14:26:39
+ * @Last Modified by:   Buntschu Leonard
+ * @Last Modified time: 07-02-2025 09:19:22
+ * All rights reserved
+ */
+
 import React from 'react';
 
 interface SquareProps {
