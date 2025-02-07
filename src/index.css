@@ -2,10 +2,13 @@
  * @Author: Buntschu Leonard
  * @Date:   04-02-2025 14:26:39
  * @Last Modified by:   Buntschu Leonard
- * @Last Modified time: 07-02-2025 10:42:39
+ * @Last Modified time: 07-02-2025 10:43:19
  * All rights reserved
  */
 
+body {
+  background-color: white;
+}
 
 .grid {
   display: grid;
